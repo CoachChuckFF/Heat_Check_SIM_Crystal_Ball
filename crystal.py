@@ -1,6 +1,7 @@
 from __future__ import print_function
 import pandas as pd
 import threading
+from datetime import datetime
 import pickle
 import os.path
 from googleapiclient.discovery import build
@@ -21,11 +22,10 @@ def equalize():
     currentRealtimeInfo = readInSheets(REALTIME_DATA)
     writeToOutput(TRACKER_DATA, currentRealtimeInfo)
 
-def runLoop():
+def runOnce():
     minutes = 0.5
     seconds = 60.0
-    print("Running...")
-    
+
     currentRealtimeInfo = readInSheets(REALTIME_DATA)
     currentTrackerInfo = readInSheets(TRACKER_DATA)
 
@@ -44,14 +44,19 @@ def runLoop():
     
     writeToOutput(TRACKER_DATA, currentTrackerInfo)
 
+    now = datetime.now()
+    # dd/mm/YY H:M:S
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
+
+    print("Updated: ", dt_string)
     #Loop that Shit
-    threading.Timer(minutes * seconds, runLoop).start()
+    # threading.Timer(minutes * seconds, runLoop).start()
 
 def main():
     # equalize()
 
-    print("Press Ctrl+X to exit")
-    runLoop()
+    print("Press Ctrl+C to exit")
+    runOnce()
 
 
 
